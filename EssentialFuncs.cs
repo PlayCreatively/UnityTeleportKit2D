@@ -47,12 +47,47 @@ namespace Essentials
 			Physics2D.IgnoreCollision(col1, col2, false);
 		}
 
+		public static Component CopyComponent(Component original, GameObject destination)
+		{
+			Component[] m_List = destination.GetComponents<Component>();
+			System.Type type = original.GetType();
+			System.Reflection.FieldInfo[] fields = type.GetFields();
+
+			foreach (Component comp in m_List)
+			{
+				// If we already have one of them
+				if (original.GetType() == comp.GetType())
+				{
+					foreach (System.Reflection.FieldInfo field in fields)
+					{
+						field.SetValue(comp, field.GetValue(original));
+					}
+					return comp;
+				}
+			}
+
+			// By here, we need to add it
+			Component copy = destination.AddComponent(type);
+
+			// Copied fields can be restricted with BindingFlags
+			foreach (System.Reflection.FieldInfo field in fields)
+			{
+				field.SetValue(copy, field.GetValue(original));
+			}
+
+			return copy;
+		}
+
 		public static T AddComponent<T>(this GameObject game, T duplicate) where T : Component
 		{
 			T target = game.AddComponent<T>();
 			foreach (PropertyInfo x in typeof(T).GetProperties())
-				if (x.CanWrite && x.Name != "density")
+            {
+				if (duplicate is Collider2D && x.Name == "density" || x.Name == "usedByComposite")
+					break;
+				if (x.CanWrite)
 					x.SetValue(target, x.GetValue(duplicate));
+            }
 			return target;
 		}
 

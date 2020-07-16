@@ -88,8 +88,29 @@ public class Portal : MonoBehaviour
         copy.transform.localRotation = Quaternion.identity;
         copy.transform.localScale = Vector3.one;
         //Copy Collider
-        BoxCollider2D copyCol = copy.AddComponent(hitCollider as BoxCollider2D);
+        Collider2D copyCol;
+        switch (hitCollider)
+        {
+            case BoxCollider2D boxCol:
+                copyCol = copy.AddComponent(boxCol);
+                break;
+            case CircleCollider2D CircleCol:
+                copyCol = copy.AddComponent(CircleCol);
+                break;
+            case CapsuleCollider2D CaspuleCol:
+                copyCol = copy.AddComponent(CaspuleCol);
+                break;
+            case PolygonCollider2D polyCol:
+                copyCol = copy.AddComponent(polyCol);
+                break;
+            case EdgeCollider2D edgeCol:
+                copyCol = copy.AddComponent(edgeCol);
+                break;
+            default:
+                goto SkipCollider;
+        }
         Physics2D.IgnoreCollision(copyCol, link.teleportCol);
+        SkipCollider:
         //Copy SpriteRenderer
         if (hitTransform.TryGetComponent(out SpriteRenderer hitSr))
             copy.AddComponent(hitSr);
