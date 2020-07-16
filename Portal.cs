@@ -24,26 +24,16 @@ public class Portal : MonoBehaviour
     public Sign GetSignSide(Vector3 ObjPos) => Vector2.Dot(-ObjPos + transform.position, transform.right);
     public float GetLinkAngleOffset => Vector2.SignedAngle(transform.up, link.transform.up);
 
-    BoxCollider2D teleportCol, wallCol;
+    BoxCollider2D teleportCol;
 
     void Start()
     {
         transform.localScale = new Vector2(.01f, length);
         teleportCol = gameObject.AddComponent<BoxCollider2D>();
         teleportCol.isTrigger = true;
-        wallCol = new GameObject("WallCollider").AddComponent<BoxCollider2D>();
-        wallCol.gameObject.layer = LayerMask.NameToLayer("Portal");
-        wallCol.transform.SetParent(transform, false);
 
         if (link == null) Debug.LogError("Portal link missing!");
     }
-
-    //[ContextMenu("CreateLayer")]
-    //public void CreateLayer()
-    //{
-    //    TagsAndLayers.CreateLayer("Portal");
-    //    Physics2D.SetLayerCollisionMask(3, 0b00000);
-    //}
 
     Collider2D[] colliderHits = new Collider2D[4];
 
@@ -67,8 +57,6 @@ public class Portal : MonoBehaviour
                 break;
             }
 
-
-
             //Create a copy of the enterer
             GameObject mirrorCopy = InstantiateAMirrorCopy(hitCollider);
 
@@ -82,8 +70,8 @@ public class Portal : MonoBehaviour
                 EssentialFuncs.IgnoreCollision(hitCollider, link.teleportCol);
             }
 
-            IEnumerator ICR = EssentialFuncs.IgnoreCollisionRoutine(teleportCol, colliderHits[i]);
-            ICR.AddEvents(Teleport);
+            IEnumerator ICRoutine = EssentialFuncs.IgnoreCollisionRoutine(teleportCol, colliderHits[i]);
+            ICRoutine.AddEvents(Teleport);
         }
     }
 
