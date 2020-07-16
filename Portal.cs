@@ -84,6 +84,9 @@ public class Portal : MonoBehaviour
         copy.transform.position = GetRelPosForLinkPortal(hitTransform.position);
         copy.transform.parent = hitTransform;
         copy.layer = hitTransform.gameObject.layer;
+        //Reset Transform
+        copy.transform.localRotation = Quaternion.identity;
+        copy.transform.localScale = Vector3.one;
         //Copy Collider
         BoxCollider2D copyCol = copy.AddComponent(hitCollider as BoxCollider2D);
         Physics2D.IgnoreCollision(copyCol, link.teleportCol);
@@ -107,6 +110,8 @@ public class Portal : MonoBehaviour
     private void OnValidate()
     {
         link.length = length;
+
+        if (link != null && link.link == null) link.link = this;
     }
 
 #if UNITY_EDITOR
