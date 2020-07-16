@@ -4,7 +4,7 @@ Because of this, collisions with the object's copy should work normally but limi
 
 Parent = Object that enters the portal
 
-Child = Copy of that object and set as child to create seamless wrapping
+Child = Copy of that object set as a child to create seamless wrapping
 
 Advantages: 
 -Seamless wrapping
